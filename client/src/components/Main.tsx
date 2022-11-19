@@ -1,8 +1,9 @@
 import React from "react";
 import "../style/App.scss";
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import 'react-notifications/lib/notifications.css';
 import Button from "@mui/material/Button";
 import { CircularProgress } from "@mui/material";
-import { positions } from "@mui/system";
 
 interface MainProps {}
 
@@ -11,6 +12,7 @@ interface MainState {
   long: Number;
   connected: Boolean;
   connectWithSomeone: Boolean;
+  locationFailed: Boolean;
 }
 
 export class Main extends React.Component<MainProps, MainState> {
@@ -20,7 +22,8 @@ export class Main extends React.Component<MainProps, MainState> {
       long: 0,
       lat: 0,
       connected: false,
-      connectWithSomeone: true,
+      connectWithSomeone: false,
+      locationFailed: false,
     };
   }
 
@@ -46,64 +49,113 @@ export class Main extends React.Component<MainProps, MainState> {
       });
   }
 
+  createConnection = async () => {
+	
+    if (this.state.lat != 0) {
+      const data = {
+        firstName: "Alexandre",
+        lat: this.state.lat,
+        long: this.state.long,
+        connected: false,
+      };
+      try {
+        const response = await fetch("http://localhost:5000/XXXX", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+		this.setState({locationFailed: false})
+      } catch (error) {
+        this.setState({ locationFailed: true });
+      }
+    } else {
+      this.setState({ locationFailed: true });
+    }
+  };
+
   render() {
     if (this.state.connected && this.state.connectWithSomeone) {
+      //connected with someone
       return (
         <div className="main-container connected-container">
-          <h1>Welcome to RoadCall</h1>
-          <h2>
-            You are talking with <span>Alexandre</span>!
+          <div className="app-logo-container">
+            <img className="app-logo" src="phone.png"></img>
+            <h1 className="app-title">RoadCall</h1>
+            <Button
+              size="large"
+              className="app-button"
+              variant="contained"
+              onClick={() => {
+                this.setState({ connected: false });
+              }}
+            >
+              DISCONNECT
+            </Button>
+          </div>
+          <h2 className="app-bottom-text">
+            YOU ARE TALKING WITH
+            <br />
+            <span>ALEXANDRE</span>!
           </h2>
-          <Button
-            size="large"
-            variant="contained"
-            onClick={() => {
-              this.setState({ connected: false });
-            }}
-          >
-            DISCONNECT
-          </Button>
-          <h1>{`${this.state.lat}`}</h1>
-          <h1>{`${this.state.long}`}</h1>
+          {/* <h1>{`${this.state.lat}`}</h1>
+          <h1>{`${this.state.long}`}</h1> */}
         </div>
       );
     } else if (this.state.connected && !this.state.connectWithSomeone) {
+      //looking for someone, connected
       return (
         <div className="main-container disconnected-container">
-          <h1>Welcome to RoadCall</h1>
-          <>
-            <h2>Searching...</h2>
-            <CircularProgress />
-          </>
+          <div className="app-logo-container">
+            <img className="app-logo" src="phone.png"></img>
+            <h1 className="app-title">RoadCall</h1>
+            <Button
+              className="app-button"
+              size="large"
+              variant="contained"
+              onClick={() => {
+                this.setState({ connected: false });
+              }}
+            >
+              DISCONNECT
+            </Button>
+          </div>
 
-          <Button
-            size="large"
-            variant="contained"
-            onClick={() => {
-              this.setState({ connected: false });
-            }}
-          >
-            DISCONNECT
-          </Button>
-          <h1>{`${this.state.lat}`}</h1>
-          <h1>{`${this.state.long}`}</h1>
+          <div className="loading-container">
+            <CircularProgress className="loading-circle" />
+            <h2 className="loading-text">SEARCHING FOR NEARBY DRIVER...</h2>
+          </div>
+          {/* <h1>{`${this.state.lat}`}</h1>
+          <h1>{`${this.state.long}`}</h1> */}
         </div>
       );
-    } else {
+    }
+	
+	else {
+      //not connected yet
       return (
         <div className="main-container">
-          <h1>Welcome to RoadCall</h1>
-          <h2>Connect and start talking</h2>
-          <Button
-            size="large"
-            variant="contained"
-            onClick={() => {
-              this.setState({ connected: true });
-            }}
-          >
-            CONNECT
-          </Button>
-          <h1>{"penis"}</h1>
+          <div className="app-logo-container">
+            <img className="app-logo" src="phone.png"></img>
+            <h1 className="app-title">RoadCall</h1>
+
+            <Button
+              size="large"
+              className="app-button"
+              variant="contained"
+              onClick={() => {
+                this.setState({ connected: true });
+                this.createConnection();
+              }}
+            >
+              CONNECT
+            </Button>
+          </div>
+
+          <h2 className="app-bottom-text">
+            CONNECT WHEN VEHICLE <br /> IS AT A STOP!
+          </h2>
         </div>
       );
     }
