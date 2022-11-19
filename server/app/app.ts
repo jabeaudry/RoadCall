@@ -1,4 +1,3 @@
-<<<<<<< Updated upstream
 import * as bodyParser from 'body-parser';
 import * as cookieParser from 'cookie-parser';
 import * as cors from 'cors';
@@ -8,18 +7,6 @@ import * as logger from 'morgan';
 import { UserController } from './controllers/user.controller';
 import { TYPES } from './types';
 import { AppDataSource } from "./data-source";
-=======
-import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
-import * as express from "express";
-import { inject, injectable } from "inversify";
-import * as logger from "morgan";
-import { UserController } from "./controllers/user.controller";
-import { TYPES } from "./types";
-import { AppDataSource } from "./data-source";
-import { User } from "./entity/User";
->>>>>>> Stashed changes
 
 @injectable()
 export class Application {
@@ -44,31 +31,10 @@ export class Application {
     this.app.use(cookieParser());
     this.app.use(cors());
 
-<<<<<<< Updated upstream
         // SQL config
         AppDataSource.initialize().catch((error: Error) => console.log(error))
-    }
-=======
-    // SQL config
-    AppDataSource.initialize()
-      .then(async () => {
-        console.log("Inserting a new user into the database...");
-        const user = new User();
-        user.firstName = "Alexandre";
-        user.lat = 0;
-        user.long = 0;
-        user.connected = false;
-        await AppDataSource.manager.save(user);
-        console.log("Saved a new user with id: " + user.id);
->>>>>>> Stashed changes
-
-        console.log("Loading users from the database...");
-        const users = await AppDataSource.manager.find(User);
-        console.log("Loaded users: ", users);
-      })
-      .catch((error: Error) => console.log(error));
   }
-
+  
   bindRoutes(): void {
     // Routes to bind (endpoints)
     this.app.use("/", this.userController.router);
