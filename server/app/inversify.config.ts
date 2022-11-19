@@ -1,6 +1,7 @@
 import "reflect-metadata";
-import { IndexController } from '@app/controllers/index.controller';
-import { IndexService } from '@app/services/index.service';
+import { UserController } from '@app/controllers/user.controller';
+import { UserService } from '@app/services/user.service';
+import { UserRepository } from '@app/repository/user.repository';
 import { Container } from 'inversify';
 import { Application } from './app';
 import { Server } from './server';
@@ -12,8 +13,9 @@ export const containerBootstrapper: () => Promise<Container> = async () => {
 
     container.bind(TYPES.Server).to(Server);
     container.bind(TYPES.Application).to(Application);
-    container.bind(TYPES.IndexController).to(IndexController);
-    container.bind(TYPES.IndexService).to(IndexService);
+    container.bind(TYPES.UserController).to(UserController);
+    container.bind(TYPES.UserService).to(UserService);
+    container.bind(TYPES.UserRepository).to(UserRepository);
 
     return container;
 };

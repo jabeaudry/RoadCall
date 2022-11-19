@@ -4,8 +4,10 @@ import * as cors from 'cors';
 import * as express from 'express';
 import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
-import { IndexController } from './controllers/index.controller';
+import { UserController } from './controllers/user.controller';
 import { TYPES } from './types';
+import { AppDataSource } from "./data-source"
+import { User } from "./entity/User"
 
 @injectable()
 export class Application {
@@ -13,7 +15,7 @@ export class Application {
     app: express.Application;
 
     constructor(
-        @inject(TYPES.IndexController) private indexController: IndexController,
+        @inject(TYPES.UserController) private userController: UserController,
     ) {
         this.app = express();
 
@@ -29,11 +31,27 @@ export class Application {
         this.app.use(bodyParser.urlencoded({ extended: true }));
         this.app.use(cookieParser());
         this.app.use(cors());
+
+        // SQL config
+        AppDataSource.initialize().then(async () => {
+            console.log("Inserting a new user into the database...")
+            const user = new User()
+            user.firstName = "Alexandre"
+            user.lat = 0
+            user.long = 0
+            user.connected = false
+            await AppDataSource.manager.save(user)
+            console.log("Saved a new user with id: " + user.id)
+        
+            console.log("Loading users from the database...")
+            const users = await AppDataSource.manager.find(User)
+            console.log("Loaded users: ", users)
+        }).catch(error => console.log(error))
     }
 
     bindRoutes(): void {
         // Routes to bind (endpoints)
-        this.app.use('/api/index', this.indexController.router);
+        this.app.use('/', this.userController.router);
         this.errorHandling();
     }
 

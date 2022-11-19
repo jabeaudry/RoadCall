@@ -1,13 +1,13 @@
 import { TYPES } from '@app/types';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
-import { IndexService } from '../services/index.service';
+import { UserService } from '../services/user.service';
 
 @injectable()
-export class IndexController {
+export class UserController {
     router: Router;
 
-    constructor(@inject(TYPES.IndexService) private indexService: IndexService) {
+    constructor(@inject(TYPES.UserService) private userService: UserService) {
         this.configureRouter();
     }
 
@@ -20,7 +20,7 @@ export class IndexController {
 
         this.router.get('/about', (req: Request, res: Response, next: NextFunction) => {
             // Send the request to the service and send the response
-            res.json(this.indexService.about());
+            res.json(this.userService.about());
         });
 
         // this.router.post('/send', (req: Request, res: Response, next: NextFunction) => {

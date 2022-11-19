@@ -2,7 +2,7 @@
 import { /*inject,*/injectable } from 'inversify';
 
 @injectable()
-export class IndexService {
+export class UserService {
     // clientMessages: Message[];
     constructor() {
         // this.clientMessages = [];
