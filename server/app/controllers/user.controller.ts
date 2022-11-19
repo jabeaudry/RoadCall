@@ -29,8 +29,6 @@ export class UserController {
             
             // Get user location
             const location: Location = req.body;
-            
-            console.log(location);
 
             // Create a new user
             try {

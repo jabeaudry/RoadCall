@@ -16,7 +16,7 @@ export class UserRepository {
         const user = new User();
         user.firstName = "Alexandre";
         user.lat = lat;
-        user.long - long;
+        user.long = long;
         user.connected = false;
         await this.userOrmRepository.save(user);
         return user.id;
