@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-import * as bodyParser from 'body-parser';
-import * as cookieParser from 'cookie-parser';
-import * as cors from 'cors';
-import * as express from 'express';
-import { inject, injectable } from 'inversify';
-import * as logger from 'morgan';
-import { UserController } from './controllers/user.controller';
-import { TYPES } from './types';
-=======
 import * as bodyParser from "body-parser";
 import * as cookieParser from "cookie-parser";
 import * as cors from "cors";
@@ -16,7 +6,6 @@ import { inject, injectable } from "inversify";
 import * as logger from "morgan";
 import { UserController } from "./controllers/user.controller";
 import { TYPES } from "./types";
->>>>>>> bf2daa1949069032161118b4b3eaea13dc96b844
 import { AppDataSource } from "./data-source";
 
 @injectable()
@@ -44,16 +33,11 @@ export class Application {
 
         // SQL config
         AppDataSource.initialize().catch((error: Error) => console.log(error))
-<<<<<<< HEAD
-  }
-  
-=======
     }
 
 
   
 
->>>>>>> bf2daa1949069032161118b4b3eaea13dc96b844
   bindRoutes(): void {
     // Routes to bind (endpoints)
     this.app.use("/", this.userController.router);
