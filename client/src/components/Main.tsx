@@ -1,7 +1,7 @@
 import React from "react";
 import "../style/App.scss";
-import {NotificationContainer, NotificationManager} from 'react-notifications';
-import 'react-notifications/lib/notifications.css';
+//import {NotificationContainer, NotificationManager} from 'react-notifications';
+import "react-notifications/lib/notifications.css";
 import Button from "@mui/material/Button";
 import { CircularProgress } from "@mui/material";
 
@@ -50,27 +50,31 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   createConnection = async () => {
-	
-    if (this.state.lat != 0) {
+    if (this.state.lat != 0 && this.state.long != 0) {
       const data = {
-        firstName: "Alexandre",
+        //firstName: "Alexandre",
         lat: this.state.lat,
         long: this.state.long,
-        connected: false,
       };
       try {
-        const response = await fetch("http://localhost:5000/XXXX", {
+        const response = await fetch("http://localhost:3000/createUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(data),
         });
-		this.setState({locationFailed: false})
+        this.setState({ locationFailed: false });
       } catch (error) {
+        // NotificationManager.error('UNEXPECTED ERROR', 'Click me!', 5000, () => {
+        //     alert('callback');
+        //   });
         this.setState({ locationFailed: true });
       }
     } else {
+      // NotificationManager.error('Error message', 'Click me!', 5000, () => {
+      //     alert('callback');
+      //   });
       this.setState({ locationFailed: true });
     }
   };
@@ -130,9 +134,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <h1>{`${this.state.long}`}</h1> */}
         </div>
       );
-    }
-	
-	else {
+    } else {
       //not connected yet
       return (
         <div className="main-container">
