@@ -1,33 +1,22 @@
-// import { TYPES } from '@app/types';
-import { /*inject,*/injectable } from 'inversify';
+import { User } from '@app/entity/User';
+import { UserRepository } from '@app/repository/user.repository';
+import { TYPES } from '@app/types';
+import { inject, injectable } from 'inversify';
 
 @injectable()
 export class UserService {
-    // clientMessages: Message[];
-    constructor() {
-        // this.clientMessages = [];
+
+    constructor(@inject(TYPES.UserRepository) private userRepository: UserRepository) {}
+
+    async createUser(lat: number, long: number): Promise<number> {
+        return await this.userRepository.createUser(lat, long);
     }
 
-    about(): String {
-        return "Hello world!"
+    async deleteUser(userId: number): Promise<void> {
+        await this.userRepository.deleteUser(userId);
     }
 
-    // async helloWorld(): Promise<Message> {
-    //     return this.dateService
-    //         .currentTime()
-    //         .then((timeMessage: Message) => {
-    //             return {
-    //                 title: 'Hello world',
-    //                 body: 'Time is ' + timeMessage.body,
-    //             };
-    //         })
-    //         .catch((error: unknown) => {
-    //             console.error('There was an error!!!', error);
-
-    //             return {
-    //                 title: 'Error',
-    //                 body: error as string,
-    //             };
-    //         });
-    // }
+    async getDisconnectedUsers(lat: number, long: number): Promise<User[]> {
+        return await this.userRepository.getDisconnectedUsers(lat, long);
+    }
 }
