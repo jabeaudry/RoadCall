@@ -1,6 +1,7 @@
 import React from "react";
 
 import Button from "@mui/material/Button";
+import { CircularProgress } from "@mui/material";
 import { positions } from "@mui/system";
 
 interface MainProps {}
@@ -55,7 +56,12 @@ export class Main extends React.Component<MainProps, MainState> {
               You are talking with <span>Alexandre</span>!
             </h2>
           )}
-          {!this.state.connectWithSomeone && <h2>Searching...</h2>}
+          {!this.state.connectWithSomeone && (
+            <>
+              <h2>Searching...</h2>
+              <CircularProgress />
+            </>
+          )}
           <Button
             size="large"
             variant="contained"
