@@ -6,8 +6,7 @@ import { inject, injectable } from 'inversify';
 import * as logger from 'morgan';
 import { UserController } from './controllers/user.controller';
 import { TYPES } from './types';
-import { AppDataSource } from "./data-source"
-import { User } from "./entity/User"
+import { AppDataSource } from "./data-source";
 
 @injectable()
 export class Application {
@@ -33,20 +32,7 @@ export class Application {
         this.app.use(cors());
 
         // SQL config
-        AppDataSource.initialize().then(async () => {
-            console.log("Inserting a new user into the database...")
-            const user = new User()
-            user.firstName = "Alexandre"
-            user.lat = 0
-            user.long = 0
-            user.connected = false
-            await AppDataSource.manager.save(user)
-            console.log("Saved a new user with id: " + user.id)
-        
-            console.log("Loading users from the database...")
-            const users = await AppDataSource.manager.find(User)
-            console.log("Loaded users: ", users)
-        }).catch(error => console.log(error))
+        AppDataSource.initialize().catch((error: Error) => console.log(error))
     }
 
     bindRoutes(): void {
