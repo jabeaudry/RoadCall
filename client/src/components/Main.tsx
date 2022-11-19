@@ -24,7 +24,7 @@ export class Main extends React.Component<MainProps, MainState> {
   }
 
   componentDidMount() {
-    this.test();
+    this.getCurrentLocation();
   }
 
   getPosition(): Promise<GeolocationPosition> {
@@ -33,7 +33,7 @@ export class Main extends React.Component<MainProps, MainState> {
     );
   }
 
-  test() {
+  getCurrentLocation() {
     this.getPosition()
       .then((position) => {
         console.log(position);
