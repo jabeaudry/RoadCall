@@ -62,7 +62,7 @@ export class Main extends React.Component<MainProps, MainState> {
         long: this.state.long,
       };
       try {
-        const response = await fetch("http://localhost:3000/createUser", {
+        const response = await fetch("https://road-call.herokuapp.com/createUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
