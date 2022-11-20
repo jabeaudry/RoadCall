@@ -13,22 +13,49 @@ interface MainState {
   connected: Boolean;
   connectWithSomeone: Boolean;
   locationFailed: Boolean;
+  userId: Number;
+  disconnectedUsers: any[];
+  selectedUserId: Number;
 }
 
 export class Main extends React.Component<MainProps, MainState> {
+  private interval: ReturnType<typeof setTimeout>;
   constructor(props: MainProps) {
     super(props);
     this.state = {
       long: 0,
       lat: 0,
       connected: false,
-      connectWithSomeone: false,
+      connectWithSomeone: false, //true means looking to connect
       locationFailed: false,
+      userId: 0,
+      disconnectedUsers: [],
+      selectedUserId: 0,
     };
+    this.interval = setTimeout(() => {}, 1);
   }
 
   componentDidMount() {
     this.getCurrentLocation();
+    if (this.state.disconnectedUsers?.length > 0) {
+      let selectedUser =
+        this.state.disconnectedUsers[
+          Math.floor(Math.random() * this.state.disconnectedUsers.length)
+        ]?.id;
+      console.log(selectedUser);
+      this.setState({ selectedUserId: selectedUser });
+      this.setState({ connectWithSomeone: false });
+    }
+    console.log(this.state.connectWithSomeone);
+    this.interval = setTimeout(() => {
+      if (this.state.connected && this.state.connectWithSomeone) {
+        this.getDisconnected();
+      }
+    }, 5000);
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.interval);
   }
 
   // GEOLOCATION API
@@ -54,7 +81,7 @@ export class Main extends React.Component<MainProps, MainState> {
   // INITIAL POST REQUEST
 
   createConnection = async () => {
-    if (this.state.lat != 0 && this.state.long != 0) {
+    if (this.state.lat !== 0 && this.state.long !== 0) {
       console.log(this.state.lat);
       const data = {
         //firstName: "Alexandre",
@@ -69,7 +96,13 @@ export class Main extends React.Component<MainProps, MainState> {
           },
           body: JSON.stringify(data),
         });
+        let res = await response
+          .json()
+          .then((re) => this.setState({ userId: re.userId }));
         this.setState({ locationFailed: false });
+        this.setState({ connected: true });
+        this.setState({ connectWithSomeone: true });
+        console.log(this.state.connected);
       } catch (error) {
         this.setState({ locationFailed: true });
         this.notify();
@@ -77,6 +110,62 @@ export class Main extends React.Component<MainProps, MainState> {
     } else {
       this.setState({ locationFailed: true });
       this.notify();
+    }
+  };
+
+  // GET DISCONNECTED ID
+
+  getDisconnected = async () => {
+    if (this.state.lat !== 0 && this.state.long !== 0) {
+      let lat = Math.round((this.state.lat as number) * 10) / 10;
+      console.log(lat);
+      let long = Math.round((this.state.long as number) * 10) / 10;
+      console.log(this.state.long);
+      console.log(long);
+      try {
+        const response = await fetch(
+          `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+          .then((response) => response.json())
+          .then((out) => {
+            console.log(out);
+            if (out?.users) {
+              this.setState({ disconnectedUsers: out.users });
+            }
+          });
+      } catch (error) {
+        console.log("Whoops");
+      }
+    } else {
+      this.setState({ locationFailed: true });
+      this.notify();
+    }
+  };
+
+  // DELETE USER
+
+  deleteConnection = async () => {
+    try {
+      console.log(this.state.userId);
+      const response = await fetch(
+        `http://localhost:3000/deleteUser?userId=${this.state.userId}`,
+        {
+          method: "DELETE",
+        }
+      )
+        .then((res) => res.text())
+        .then((res) => console.log(res));
+      this.setState({ connected: false });
+      this.setState({ connectWithSomeone: false });
+      this.setState({ selectedUserId: 0 });
+    } catch (error) {
+      console.log("User was not deleted whoops :(");
     }
   };
 
@@ -91,8 +180,9 @@ export class Main extends React.Component<MainProps, MainState> {
   render() {
     if (
       this.state.connected &&
-      this.state.connectWithSomeone &&
-      !this.state.locationFailed
+      !this.state.connectWithSomeone &&
+      !this.state.locationFailed &&
+      this.state.selectedUserId != 0
     ) {
       //connected with someone
       return (
@@ -105,7 +195,7 @@ export class Main extends React.Component<MainProps, MainState> {
               className="app-button"
               variant="contained"
               onClick={() => {
-                this.setState({ connected: false });
+                this.deleteConnection();
               }}
             >
               DISCONNECT
@@ -114,7 +204,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <h2 className="app-bottom-text">
             YOU ARE TALKING WITH
             <br />
-            <span>ALEXANDRE</span>!
+            <span>{`${this.state.selectedUserId}`}</span>!
           </h2>
           {/* <h1>{`${this.state.lat}`}</h1>
           <h1>{`${this.state.long}`}</h1> */}
@@ -122,7 +212,7 @@ export class Main extends React.Component<MainProps, MainState> {
       );
     } else if (
       this.state.connected &&
-      !this.state.connectWithSomeone &&
+      this.state.connectWithSomeone &&
       !this.state.locationFailed
     ) {
       //looking for someone, connected
@@ -136,7 +226,7 @@ export class Main extends React.Component<MainProps, MainState> {
               size="large"
               variant="contained"
               onClick={() => {
-                this.setState({ connected: false });
+                this.deleteConnection();
               }}
             >
               DISCONNECT
@@ -147,8 +237,6 @@ export class Main extends React.Component<MainProps, MainState> {
             <CircularProgress className="loading-circle" />
             <h2 className="loading-text">SEARCHING FOR NEARBY DRIVER...</h2>
           </div>
-          {/* <h1>{`${this.state.lat}`}</h1>
-          <h1>{`${this.state.long}`}</h1> */}
         </div>
       );
     } else {
@@ -164,8 +252,9 @@ export class Main extends React.Component<MainProps, MainState> {
               className="app-button"
               variant="contained"
               onClick={() => {
-                this.setState({ connected: true });
                 this.createConnection();
+                this.setState({ connected: true });
+                this.setState({ connectWithSomeone: true });
               }}
             >
               CONNECT
