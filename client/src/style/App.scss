@@ -37,6 +37,9 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+  .app-bottom-text {
+    padding-top: 2vh;
+  }
 
   h2 {
     padding-top: 1vh;
