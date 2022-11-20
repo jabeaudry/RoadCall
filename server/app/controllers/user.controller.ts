@@ -25,6 +25,11 @@ export class UserController {
                 res.status(400).send("Missing the user's location!");
                 return;
             }
+
+            if (!Object.keys(req.body).includes("lat") || !Object.keys(req.body).includes("long")) {
+                res.status(400).send("Missing lat or long values.");
+                return;
+            }
             
             // Get user location
             const location: Location = req.body;
