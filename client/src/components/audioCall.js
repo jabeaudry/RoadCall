@@ -9,9 +9,7 @@ export default function audioCall(currentId, otherUserId) {
 			const call = peer.call(otherUserId, stream);
 			call.on("stream", (remoteStream) => {
 				let bod = document.getElementsByTagName('body');
-				let audio = document.createElement('<audio autoplay />');
-				bod.append(audio);
-				audio[0].src = (URL || webkitURL || mozURL).createObjectURL(remoteStream);
+				document.createElement('<audio autoplay />').setAttribute("srcObject", remoteStream).appendTo(bod);
 			});
 		},
 		(err) => {
@@ -26,12 +24,8 @@ export default function audioCall(currentId, otherUserId) {
 				call.answer(stream); // Answer the call with an A/V stream.
 
 				call.on("stream", (remoteStream) => {
-
 					let bod = document.getElementsByTagName('body');
-					let audio = document.createElement('<audio autoplay />');
-					bod.append(audio);
-					audio[0].src = (URL || webkitURL || mozURL).createObjectURL(remoteStream);
-
+					document.createElement('<audio autoplay />').setAttribute("srcObject", remoteStream).appendTo(bod);
 				});
 			},
 			(err) => {
