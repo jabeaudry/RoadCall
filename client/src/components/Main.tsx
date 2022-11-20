@@ -130,7 +130,7 @@ export class Main extends React.Component<MainProps, MainState> {
       try {
         const response = await fetch(
           // `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
-          `https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
+          `https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}&userId=${this.state.userId}`,
           {
             method: "GET",
             headers: {
