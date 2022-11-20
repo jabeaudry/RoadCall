@@ -38,7 +38,7 @@ export class UserRepository {
     }
 
     // Gets a list of disconnected users
-    async getDisconnectedUsers(lat: number, long: number): Promise<User[]> {
+    async getDisconnectedUsers(lat: number, long: number): Promise<number[]> {
         // Set the radius around our user with boundaries (~ 10km radius)
         const upperBoundLat: number = lat + 0.1;
         const lowerBoundLat: number = lat - 0.1;
@@ -46,11 +46,18 @@ export class UserRepository {
         const lowerBoundLong: number = long - 0.1;
 
         // Query user table to find users within our bounds
-        return await this.userOrmRepository.createQueryBuilder("user")
+        const users: User[] = await this.userOrmRepository.createQueryBuilder("user")
+            .select('user.id')
             .where("user.connected = :disconnected", { disconnected: false })
             .andWhere("user.lat >= :lowerBoundLat", { lowerBoundLat })
             .andWhere("user.lat <= :upperBoundLat", { upperBoundLat })
             .andWhere("user.long >= :lowerBoundLong", { lowerBoundLong })
             .andWhere("user.long <= :upperBoundLong", { upperBoundLong }).getMany();
+        
+        let userIds : number[] = [];
+        for(let user of users) {
+            userIds.push(user.id);
+        }
+        return userIds;
     }
 }

@@ -1,5 +1,5 @@
 import * as http from 'http';
-import { inject, injectable } from 'inversify';
+import { inject, injectable, LazyServiceIdentifer } from 'inversify';
 import { Application } from './app';
 import { TYPES } from './types';
 
@@ -8,8 +8,7 @@ export class Server {
     private readonly appPort: string | number | boolean = this.normalizePort(process.env.PORT || '3000');
     private readonly baseDix: number = 10;
     private server: http.Server;
-
-    constructor(@inject(TYPES.Application) private application: Application) {}
+    constructor(@inject(new LazyServiceIdentifer(() => TYPES.Application)) private application: Application) {}
 
     init(): void {
         this.application.app.set('port', this.appPort);
@@ -19,6 +18,9 @@ export class Server {
         this.server.listen(this.appPort);
         this.server.on('error', (error: NodeJS.ErrnoException) => this.onError(error));
         this.server.on('listening', () => this.onListening());
+
+        this.application.config(this.server);
+        this.application.bindRoutes();
     }
 
     private normalizePort(val: number | string): number | string | boolean {

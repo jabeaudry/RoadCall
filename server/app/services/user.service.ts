@@ -1,4 +1,3 @@
-import { User } from '@app/entity/User';
 import { UserRepository } from '@app/repository/user.repository';
 import { TYPES } from '@app/types';
 import { inject, injectable } from 'inversify';
@@ -16,7 +15,7 @@ export class UserService {
         await this.userRepository.deleteUser(userId);
     }
 
-    async getDisconnectedUsers(lat: number, long: number): Promise<User[]> {
+    async getDisconnectedUsers(lat: number, long: number): Promise<number[]> {
         return await this.userRepository.getDisconnectedUsers(lat, long);
     }
 }

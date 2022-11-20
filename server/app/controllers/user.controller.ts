@@ -1,4 +1,3 @@
-import { User } from '@app/entity/User';
 import { TYPES } from '@app/types';
 import { NextFunction, Request, Response, Router } from 'express';
 import { inject, injectable } from 'inversify';
@@ -91,8 +90,8 @@ export class UserController {
 
             // Get list of users in a radius around our user
             try {
-                const users: User[] = await this.userService.getDisconnectedUsers(lat, long);
-                res.status(200).json({users});
+                const userIds: number[] = await this.userService.getDisconnectedUsers(lat, long);
+                res.status(200).json({userIds : userIds});
             } catch(error) {
                 if(error instanceof Error) {
                     res.status(500).send(error.name + " : " + error.message);

@@ -1,29 +1,27 @@
-import * as bodyParser from "body-parser";
-import * as cookieParser from "cookie-parser";
-import * as cors from "cors";
-import * as express from "express";
-import { inject, injectable } from "inversify";
-import * as logger from "morgan";
-import { UserController } from "./controllers/user.controller";
-import { TYPES } from "./types";
+import * as bodyParser from 'body-parser';
+import * as cookieParser from 'cookie-parser';
+import * as cors from 'cors';
+import * as express from 'express';
+import { inject, injectable } from 'inversify';
+import * as logger from 'morgan';
+import { UserController } from './controllers/user.controller';
+import { TYPES } from './types';
 import { AppDataSource } from "./data-source";
+import { ExpressPeerServer } from 'peer';
+import * as http from 'http';
 
 @injectable()
 export class Application {
   private readonly internalError: number = 500;
+  private peerServer: any = null; // ¯\_(ツ)_/¯
   app: express.Application;
 
-  constructor(
-    @inject(TYPES.UserController) private userController: UserController
+  constructor(@inject(TYPES.UserController) private userController: UserController
   ) {
     this.app = express();
-
-    this.config();
-
-    this.bindRoutes();
   }
 
-  private config(): void {
+  public config(server: http.Server): void {
     // Middlewares configuration
     this.app.use(logger("dev"));
     this.app.use(bodyParser.json());
@@ -31,16 +29,23 @@ export class Application {
     this.app.use(cookieParser());
     this.app.use(cors());
 
-        // SQL config
-        AppDataSource.initialize().catch((error: Error) => console.log(error))
-    }
+    // Config peer server
+    this.peerServer = ExpressPeerServer(server, {
+        path: '/myapp'
+    })
 
-
+    // SQL config
+    AppDataSource.initialize().catch((error: Error) => console.log(error))
+  }
   
-
-  bindRoutes(): void {
+  public bindRoutes(): void {
     // Routes to bind (endpoints)
     this.app.use("/", this.userController.router);
+
+    // Null checking this.peerServer
+    if (this.peerServer)
+      this.app.use("/peerjs", this.peerServer);
+      
     this.errorHandling();
   }
 
