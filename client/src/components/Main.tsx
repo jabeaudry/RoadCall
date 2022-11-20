@@ -4,6 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "@mui/material/Button";
 import { CircularProgress } from "@mui/material";
+import {audioCall} from '../audioCall.js'
 
 interface MainProps {}
 
@@ -37,16 +38,18 @@ export class Main extends React.Component<MainProps, MainState> {
 
   componentDidMount() {
     this.getCurrentLocation();
+    if (this.state.selectedUserId != 0) {
+      audioCall(String(this.state.userId), String(this.state.selectedUserId));
+    }
     console.log(this.state.connectWithSomeone);
     this.interval = setInterval(() => {
       if (this.state.connected && this.state.connectWithSomeone) {
         this.getDisconnected();
         if (this.state.disconnectedUsers.length > 0) {
           let selectedUser =
-            // this.state.disconnectedUsers[
-            //   Math.floor(Math.random() * this.state.disconnectedUsers.length)
-            // ]?.id;
-            this.state.disconnectedUsers[0];
+            this.state.disconnectedUsers[
+              Math.floor(Math.random() * this.state.disconnectedUsers.length)
+            ];
           console.log(selectedUser);
           this.setState({ selectedUserId: selectedUser });
           this.setState({ connectWithSomeone: false });
@@ -57,10 +60,6 @@ export class Main extends React.Component<MainProps, MainState> {
       }
     }, 5000);
   }
-
-  //   componentWillUnmount() {
-  //     clearTimeout(this.interval);
-  //   }
 
   // GEOLOCATION API
 
@@ -93,13 +92,16 @@ export class Main extends React.Component<MainProps, MainState> {
         long: this.state.long,
       };
       try {
-        const response = await fetch("https://road-call.herokuapp.com/createUser", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        });
+        const response = await fetch(
+          "https://road-call.herokuapp.com/createUser",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
         let res = await response
           .json()
           .then((re) => this.setState({ userId: re.userId }));
@@ -207,7 +209,7 @@ export class Main extends React.Component<MainProps, MainState> {
           <h2 className="app-bottom-text">
             YOU ARE TALKING WITH
             <br />
-            <span>{`${this.state.selectedUserId}`}</span>!
+            <span>Alexandre</span>!
           </h2>
           {/* <h1>{`${this.state.lat}`}</h1>
           <h1>{`${this.state.long}`}</h1> */}
