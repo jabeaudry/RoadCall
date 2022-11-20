@@ -107,3 +107,12 @@ body {
   padding-bottom: 4vh !important;
   opacity: 0.6;
 }
+
+.app-notification {
+  background-color: $red !important;
+  color: white !important;
+}
+
+.notification-progress-bar {
+  display: none;
+}

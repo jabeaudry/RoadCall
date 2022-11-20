@@ -1,7 +1,7 @@
 import React from "react";
 import "../style/App.scss";
-//import {NotificationContainer, NotificationManager} from 'react-notifications';
-import "react-notifications/lib/notifications.css";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Button from "@mui/material/Button";
 import { CircularProgress } from "@mui/material";
 
@@ -31,6 +31,8 @@ export class Main extends React.Component<MainProps, MainState> {
     this.getCurrentLocation();
   }
 
+  // GEOLOCATION API
+
   getPosition(): Promise<GeolocationPosition> {
     return new Promise((resolve) =>
       navigator.geolocation.getCurrentPosition(resolve)
@@ -49,8 +51,11 @@ export class Main extends React.Component<MainProps, MainState> {
       });
   }
 
+  // INITIAL POST REQUEST
+
   createConnection = async () => {
     if (this.state.lat != 0 && this.state.long != 0) {
+      console.log(this.state.lat);
       const data = {
         //firstName: "Alexandre",
         lat: this.state.lat,
@@ -66,21 +71,29 @@ export class Main extends React.Component<MainProps, MainState> {
         });
         this.setState({ locationFailed: false });
       } catch (error) {
-        // NotificationManager.error('UNEXPECTED ERROR', 'Click me!', 5000, () => {
-        //     alert('callback');
-        //   });
         this.setState({ locationFailed: true });
+        this.notify();
       }
     } else {
-      // NotificationManager.error('Error message', 'Click me!', 5000, () => {
-      //     alert('callback');
-      //   });
       this.setState({ locationFailed: true });
+      this.notify();
     }
   };
 
+  // NOTIFICATIONS FOR ERRORS
+  notify = () => {
+    toast("UNEXPECTED ERROR: Please enable location sharing.", {
+      position: toast.POSITION.BOTTOM_RIGHT,
+      className: "app-notification",
+    });
+  };
+
   render() {
-    if (this.state.connected && this.state.connectWithSomeone) {
+    if (
+      this.state.connected &&
+      this.state.connectWithSomeone &&
+      !this.state.locationFailed
+    ) {
       //connected with someone
       return (
         <div className="main-container connected-container">
@@ -107,7 +120,11 @@ export class Main extends React.Component<MainProps, MainState> {
           <h1>{`${this.state.long}`}</h1> */}
         </div>
       );
-    } else if (this.state.connected && !this.state.connectWithSomeone) {
+    } else if (
+      this.state.connected &&
+      !this.state.connectWithSomeone &&
+      !this.state.locationFailed
+    ) {
       //looking for someone, connected
       return (
         <div className="main-container disconnected-container">
@@ -158,6 +175,10 @@ export class Main extends React.Component<MainProps, MainState> {
           <h2 className="app-bottom-text">
             CONNECT WHEN VEHICLE <br /> IS AT A STOP!
           </h2>
+          <ToastContainer
+            autoClose={3000}
+            progressClassName={"notification-progress-bar"}
+          />
         </div>
       );
     }
