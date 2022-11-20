@@ -19,7 +19,7 @@ interface MainState {
 }
 
 export class Main extends React.Component<MainProps, MainState> {
-  private interval: ReturnType<typeof setTimeout>;
+  private interval: ReturnType<typeof setInterval>;
   constructor(props: MainProps) {
     super(props);
     this.state = {
@@ -32,31 +32,35 @@ export class Main extends React.Component<MainProps, MainState> {
       disconnectedUsers: [],
       selectedUserId: 0,
     };
-    this.interval = setTimeout(() => {}, 1);
+    this.interval = setInterval(() => {}, 1000);
   }
 
   componentDidMount() {
     this.getCurrentLocation();
-    if (this.state.disconnectedUsers?.length > 0) {
-      let selectedUser =
-        this.state.disconnectedUsers[
-          Math.floor(Math.random() * this.state.disconnectedUsers.length)
-        ]?.id;
-      console.log(selectedUser);
-      this.setState({ selectedUserId: selectedUser });
-      this.setState({ connectWithSomeone: false });
-    }
     console.log(this.state.connectWithSomeone);
-    this.interval = setTimeout(() => {
+    this.interval = setInterval(() => {
       if (this.state.connected && this.state.connectWithSomeone) {
         this.getDisconnected();
+        if (this.state.disconnectedUsers.length > 0) {
+          let selectedUser =
+            // this.state.disconnectedUsers[
+            //   Math.floor(Math.random() * this.state.disconnectedUsers.length)
+            // ]?.id;
+            this.state.disconnectedUsers[0];
+          console.log(selectedUser);
+          this.setState({ selectedUserId: selectedUser });
+          this.setState({ connectWithSomeone: false });
+        }
+      }
+      if (!this.state.connectWithSomeone) {
+        clearInterval(this.interval);
       }
     }, 5000);
   }
 
-  componentWillUnmount() {
-    clearTimeout(this.interval);
-  }
+  //   componentWillUnmount() {
+  //     clearTimeout(this.interval);
+  //   }
 
   // GEOLOCATION API
 
@@ -102,7 +106,6 @@ export class Main extends React.Component<MainProps, MainState> {
         this.setState({ locationFailed: false });
         this.setState({ connected: true });
         this.setState({ connectWithSomeone: true });
-        console.log(this.state.connected);
       } catch (error) {
         this.setState({ locationFailed: true });
         this.notify();
@@ -124,7 +127,7 @@ export class Main extends React.Component<MainProps, MainState> {
       console.log(long);
       try {
         const response = await fetch(
-          `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
+          `https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
           {
             method: "GET",
             headers: {
@@ -134,9 +137,9 @@ export class Main extends React.Component<MainProps, MainState> {
         )
           .then((response) => response.json())
           .then((out) => {
-            console.log(out);
-            if (out?.users) {
-              this.setState({ disconnectedUsers: out.users });
+            console.log(out?.userIds);
+            if (out?.userIds) {
+              this.setState({ disconnectedUsers: out.userIds });
             }
           });
       } catch (error) {
@@ -154,7 +157,7 @@ export class Main extends React.Component<MainProps, MainState> {
     try {
       console.log(this.state.userId);
       const response = await fetch(
-        `http://localhost:3000/deleteUser?userId=${this.state.userId}`,
+        `https://road-call.herokuapp.com/deleteUser?userId=${this.state.userId}`,
         {
           method: "DELETE",
         }
