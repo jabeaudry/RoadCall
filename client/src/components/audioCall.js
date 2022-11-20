@@ -1,7 +1,7 @@
-import {Peer} from 'peerjs';
-export function audioCall(currentId, otherUserId) {
-    const peer = new Peer(currentId);
-
+import { Peer } from 'peerjs';
+export default function audioCall(currentId, otherUserId) {
+	const peer = new Peer(currentId);
+	console.log('hello')
 	navigator.mediaDevices.getUserMedia(
 		{ video: true, audio: true },
 		(stream) => {

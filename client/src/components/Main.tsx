@@ -4,7 +4,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Button from "@mui/material/Button";
 import { CircularProgress } from "@mui/material";
-import {audioCall} from '../audioCall.js'
+import audioCall from "./audioCall.js";
 
 interface MainProps {}
 
@@ -38,9 +38,6 @@ export class Main extends React.Component<MainProps, MainState> {
 
   componentDidMount() {
     this.getCurrentLocation();
-    if (this.state.selectedUserId != 0) {
-      audioCall(String(this.state.userId), String(this.state.selectedUserId));
-    }
     console.log(this.state.connectWithSomeone);
     this.interval = setInterval(() => {
       if (this.state.connected && this.state.connectWithSomeone) {
@@ -53,6 +50,11 @@ export class Main extends React.Component<MainProps, MainState> {
           console.log(selectedUser);
           this.setState({ selectedUserId: selectedUser });
           this.setState({ connectWithSomeone: false });
+
+          audioCall(
+            String(this.state.userId),
+            String(this.state.selectedUserId)
+          );
         }
       }
       if (!this.state.connectWithSomeone) {
@@ -92,16 +94,14 @@ export class Main extends React.Component<MainProps, MainState> {
         long: this.state.long,
       };
       try {
-        const response = await fetch(
-          "https://road-call.herokuapp.com/createUser",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
+        const response = await fetch("http://localhost:3000/createUser", {
+          //const response = await fetch("https://road-call.herokuapp.com/createUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
         let res = await response
           .json()
           .then((re) => this.setState({ userId: re.userId }));
@@ -129,7 +129,8 @@ export class Main extends React.Component<MainProps, MainState> {
       console.log(long);
       try {
         const response = await fetch(
-          `https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
+          `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
+          //`https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
           {
             method: "GET",
             headers: {
@@ -159,7 +160,8 @@ export class Main extends React.Component<MainProps, MainState> {
     try {
       console.log(this.state.userId);
       const response = await fetch(
-        `https://road-call.herokuapp.com/deleteUser?userId=${this.state.userId}`,
+        `http://localhost:3000/deleteUser?userId=${this.state.userId}`,
+        //`https://road-call.herokuapp.com/deleteUser?userId=${this.state.userId}`,
         {
           method: "DELETE",
         }
