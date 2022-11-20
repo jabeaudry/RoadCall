@@ -94,8 +94,8 @@ export class Main extends React.Component<MainProps, MainState> {
         long: this.state.long,
       };
       try {
-        const response = await fetch("http://localhost:3000/createUser", {
-          //const response = await fetch("https://road-call.herokuapp.com/createUser", {
+        // const response = await fetch("http://localhost:3000/createUser", {
+        const response = await fetch("https://road-call.herokuapp.com/createUser", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -129,8 +129,8 @@ export class Main extends React.Component<MainProps, MainState> {
       console.log(long);
       try {
         const response = await fetch(
-          `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
-          //`https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
+          // `http://localhost:3000/disconnectedUsers?lat=${lat}&long=${long}`,
+          `https://road-call.herokuapp.com/disconnectedUsers?lat=${lat}&long=${long}`,
           {
             method: "GET",
             headers: {
@@ -160,8 +160,8 @@ export class Main extends React.Component<MainProps, MainState> {
     try {
       console.log(this.state.userId);
       const response = await fetch(
-        `http://localhost:3000/deleteUser?userId=${this.state.userId}`,
-        //`https://road-call.herokuapp.com/deleteUser?userId=${this.state.userId}`,
+        // `http://localhost:3000/deleteUser?userId=${this.state.userId}`,
+        `https://road-call.herokuapp.com/deleteUser?userId=${this.state.userId}`,
         {
           method: "DELETE",
         }
