@@ -9,10 +9,10 @@ RoadChat directly addresses these issues by providing exciting conversations at 
 
 ## Implementation
 
-**Front-end: Typescript
+**Front-end: Typescript**
 The app is located at `/client/`.
 
-**Back-end: Typescript, Express, MySQL
+**Back-end: Typescript, Express, MySQL**
 The back-end is located at `/server/`. 
 
 
