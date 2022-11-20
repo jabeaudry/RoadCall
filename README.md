@@ -5,7 +5,7 @@ A proximity chat application for truckers to fight boredom and stay awake, using
 
 ## About the Project
 Around 20% of vehicle collisions occur due to fatigue in Canada. Truckers are especially vulnerable with their hectic schedules. Additionally, truck drivers can often spend days with little to no interaction with others. The dullness can be dangerous. 
-RoadChat directly addresses these issues by providing exciting conversations at any time of a commute. Drivers get to connect when they are driving closeby and share a common experience. 
+RoadChat directly addresses these issues by providing exciting conversations at any time of a commute. Drivers get to connect when they are driving closeby and share a common experience. They may work for different companies and have different backgrounds, but they share a common journey. 
 
 ## Implementation
 
@@ -13,6 +13,6 @@ RoadChat directly addresses these issues by providing exciting conversations at 
 The app is located at `/client/`.
 
 **Back-end: Typescript, Express, MySQL
-The back-end is located at `/src/`. 
+The back-end is located at `/server/`. 
 
 
