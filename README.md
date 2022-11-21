@@ -1,7 +1,7 @@
 # RoadCall
-A proximity chat application for truckers to fight boredom and stay awake, using `Typescript`, `Express` and `MySQL`.
+A proximity chat application for truckers to fight boredom and stay awake, using `Typescript`, `Express.js`, `Node.js` and `MySQL`.
 
-<img width="199" alt="image" src="https://user-images.githubusercontent.com/56971054/202873694-31d375b0-9d28-4bb0-8f36-5f888036d3a0.png">
+<img width="600" alt="image" src="https://user-images.githubusercontent.com/56971054/203176175-220778d5-6e81-40a0-9b04-5d4ba61dbe36.png">
 
 ## About the Project
 Around 20% of vehicle collisions occur due to fatigue in Canada. Truckers are especially vulnerable with their hectic schedules. Additionally, truck drivers can often spend days with little to no interaction with others. The dullness can be dangerous.   
@@ -16,7 +16,7 @@ The interface is not meant to be looked at during the drive. Before starting the
 **Front-end: Typescript**  
 The app is located at `/client/`.
 
-**Back-end: Typescript, Express, MySQL**  
+**Back-end: Typescript, Express, Node.js, MySQL**  
 The back-end is located at `/server/`. 
 
 
