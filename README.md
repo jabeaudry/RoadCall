@@ -1,5 +1,5 @@
 # RoadCall
-A proximity chat application for truckers to fight boredom and stay awake, using `Typescript`, `Express.js`, `Node.js` and `MySQL`.
+A proximity chat application for truck drivers to fight boredom and stay awake, using `Typescript`, `Express.js`, `Node.js` and `MySQL`.
 
 <img width="600" alt="image" src="https://user-images.githubusercontent.com/56971054/203176175-220778d5-6e81-40a0-9b04-5d4ba61dbe36.png">
 
